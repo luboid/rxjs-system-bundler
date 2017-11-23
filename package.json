@@ -1,0 +1,28 @@
+{
+  "name": "rxjs-system-bundler",
+  "version": "1.0.0",
+  "description": "Utility to build RxJS system bundle",
+  "main": "gulpfile.js",
+  "scripts": {
+    "clear:rxjs": "node_modules/.bin/gulp clear:rxjs",
+    "compile:rxjs": "node_modules/.bin/gulp compile:rxjs",
+    "bundle:rxjs": "node_modules/.bin/gulp bundle:rxjs",
+    "bundle-only:rxjs": "node_modules/.bin/gulp bundle-only:rxjs"
+  },
+  "keywords": ["RxJS5", "RxJS", "SystemJS", "system", "bundler"],
+  "author": "luboid",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luboid/rxjs-system-bundler.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.3",
+    "rimraf": "^2.6.2",
+    "rxjs": "^5.5.2",
+    "systemjs-builder": "^0.16.12",
+    "tslib": "^1.8.0",
+    "typescript": "^2.6.1"
+  }
+}
