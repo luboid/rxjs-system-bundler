@@ -9,10 +9,10 @@ System.config({
     rxjs: {
       defaultExtension: "js",
       main: "Rx"
-    },
-    "rxjs/operators": {
-      defaultExtension: "js",
-      main: "index"
     }
+    //"rxjs/operators": {
+    //  defaultExtension: "js",
+    //  main: "index"
+    //}
   }
 });

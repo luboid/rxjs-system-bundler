@@ -34,62 +34,58 @@ System.registerDynamic("rxjs/observable/BoundCallbackObservable.js", ["tslib", "
          * Observable.</span>
          *
          * `bindCallback` is not an operator because its input and output are not
-         * Observables. The input is a function `func` with some parameters, but the
+         * Observables. The input is a function `func` with some parameters, the
          * last parameter must be a callback function that `func` calls when it is
          * done.
          *
          * The output of `bindCallback` is a function that takes the same parameters
          * as `func`, except the last one (the callback). When the output function
-         * is called with arguments, it will return an Observable. If `func` function
-         * calls its callback with one argument, the Observable will emit that value.
-         * If on the other hand callback is called with multiple values, resulting
-         * Observable will emit an array with these arguments.
+         * is called with arguments it will return an Observable. If function `func`
+         * calls its callback with one argument the Observable will emit that value.
+         * If on the other hand the callback is called with multiple values the resulting
+         * Observable will emit an array with said values as arguments.
          *
-         * It is very important to remember, that input function `func` is not called
-         * when output function is, but rather when Observable returned by output
-         * function is subscribed. This means if `func` makes AJAX request, that request
-         * will be made every time someone subscribes to resulting Observable, but not before.
+         * It is very important to remember that input function `func` is not called
+         * when the output function is, but rather when the Observable returned by the output
+         * function is subscribed. This means if `func` makes an AJAX request, that request
+         * will be made every time someone subscribes to the resulting Observable, but not before.
          *
-         * Optionally, selector function can be passed to `bindObservable`. That function
-         * takes the same arguments as callback, and returns value
-         * that will be emitted by Observable instead of callback parameters themselves.
-         * Even though by default multiple arguments passed to callback appear in the stream as array,
-         * selector function will be called with arguments directly, just as callback would.
-         * This means you can imagine default selector (when one is not provided explicitly)
-         * as function that aggregates all its arguments into array, or simply returns first argument,
+         * Optionally, a selector function can be passed to `bindObservable`. The selector function
+         * takes the same arguments as the callback and returns the value that will be emitted by the Observable.
+         * Even though by default multiple arguments passed to callback appear in the stream as an array
+         * the selector function will be called with arguments directly, just as the callback would.
+         * This means you can imagine the default selector (when one is not provided explicitly)
+         * as a function that aggregates all its arguments into an array, or simply returns first argument
          * if there is only one.
          *
-         * Last optional parameter - {@link Scheduler} - can be used to control when call
+         * The last optional parameter - {@link Scheduler} - can be used to control when the call
          * to `func` happens after someone subscribes to Observable, as well as when results
-         * passed to callback will be emitted. By default subscription to Observable calls `func`
-         * synchronously, but using `Scheduler.async` as last parameter will defer call to input function,
-         * just like wrapping that call in `setTimeout` with time `0` would. So if you use async Scheduler
-         * and call `subscribe` on output Observable, all function calls that are currently executing,
+         * passed to callback will be emitted. By default, the subscription to  an Observable calls `func`
+         * synchronously, but using `Scheduler.async` as the last parameter will defer the call to `func`,
+         * just like wrapping the call in `setTimeout` with a timeout of `0` would. If you use the async Scheduler
+         * and call `subscribe` on the output Observable all function calls that are currently executing
          * will end before `func` is invoked.
          *
-         * When it comes to emitting results passed to callback, by default they are emitted
-         * immediately after `func` invokes callback. In particular, if callback is called synchronously,
-         * then subscription to resulting Observable will call `next` function synchronously as well.
-         * If you want to defer that call, using `Scheduler.async` will, again, do the job.
-         * This means that by using `Scheduler.async` you can, in a sense, ensure that `func`
-         * always calls its callback asynchronously, thus avoiding terrifying Zalgo.
+         * By default results passed to the callback are emitted immediately after `func` invokes the callback.
+         * In particular, if the callback is called synchronously the subscription of the resulting Observable
+         * will call the `next` function synchronously as well.  If you want to defer that call,
+         * you may use `Scheduler.async` just as before.  This means that by using `Scheduler.async` you can
+         * ensure that `func` always calls its callback asynchronously, thus avoiding terrifying Zalgo.
          *
-         * Note that Observable created by output function will always emit only one value
-         * and then complete right after. Even if `func` calls callback multiple times, values from
-         * second and following calls will never appear in the stream. If you need to
-         * listen for multiple calls, you probably want to use {@link fromEvent} or
-         * {@link fromEventPattern} instead.
+         * Note that the Observable created by the output function will always emit a single value
+         * and then complete immediately. If `func` calls the callback multiple times, values from subsequent
+         * calls will not appear in the stream. If you need to listen for multiple calls,
+         *  you probably want to use {@link fromEvent} or {@link fromEventPattern} instead.
          *
-         * If `func` depends on some context (`this` property), that context will be set
-         * to the same context that output function has at call time. In particular, if `func`
-         * is called as method of some object, in order to preserve proper behaviour,
-         * it is recommended to set context of output function to that object as well,
-         * provided `func` is not already bound.
+         * If `func` depends on some context (`this` property) and is not already bound the context of `func`
+         * will be the context that the output function has at call time. In particular, if `func`
+         * is called as a method of some objec and if `func` is not already bound, in order to preserve the context
+         * it is recommended that the context of the output function is set to that object as well.
          *
-         * If input function calls its callback in "node style" (i.e. first argument to callback is
-         * optional error parameter signaling whether call failed or not), {@link bindNodeCallback}
+         * If the input function calls its callback in the "node style" (i.e. first argument to callback is
+         * optional error parameter signaling whether the call failed or not), {@link bindNodeCallback}
          * provides convenient error handling and probably is a better choice.
-         * `bindCallback` will treat such functions without any difference and error parameter
+         * `bindCallback` will treat such functions the same as any other and error parameters
          * (whether passed or not) will always be interpreted as regular callback argument.
          *
          *
@@ -100,7 +96,7 @@ System.registerDynamic("rxjs/observable/BoundCallbackObservable.js", ["tslib", "
          * result.subscribe(x => console.log(x), e => console.error(e));
          *
          *
-         * @example <caption>Receive array of arguments passed to callback</caption>
+         * @example <caption>Receive an array of arguments passed to a callback</caption>
          * someFunction((a, b, c) => {
          *   console.log(a); // 5
          *   console.log(b); // 'some string'
@@ -113,7 +109,7 @@ System.registerDynamic("rxjs/observable/BoundCallbackObservable.js", ["tslib", "
          * });
          *
          *
-         * @example <caption>Use bindCallback with selector function</caption>
+         * @example <caption>Use bindCallback with a selector function</caption>
          * someFunction((a, b, c) => {
          *   console.log(a); // 'a'
          *   console.log(b); // 'b'
@@ -144,7 +140,7 @@ System.registerDynamic("rxjs/observable/BoundCallbackObservable.js", ["tslib", "
          * // I was async!
          *
          *
-         * @example <caption>Use bindCallback on object method</caption>
+         * @example <caption>Use bindCallback on an object method</caption>
          * const boundMethod = Rx.Observable.bindCallback(someObject.methodWithCallback);
          * boundMethod.call(someObject) // make sure methodWithCallback has access to someObject
          * .subscribe(subscriber);
@@ -154,9 +150,9 @@ System.registerDynamic("rxjs/observable/BoundCallbackObservable.js", ["tslib", "
          * @see {@link from}
          * @see {@link fromPromise}
          *
-         * @param {function} func Function with a callback as the last parameter.
+         * @param {function} func A function with a callback as the last parameter.
          * @param {function} [selector] A function which takes the arguments from the
-         * callback and maps those to a value to emit on the output Observable.
+         * callback and maps them to a value that is emitted on the output Observable.
          * @param {Scheduler} [scheduler] The scheduler on which to schedule the
          * callbacks.
          * @return {function(...params: *): Observable} A function which returns the
@@ -1872,15 +1868,6 @@ System.registerDynamic("rxjs/add/observable/interval.js", ["../../Observable", "
   var interval_1 = $__require("../../observable/interval");
   Observable_1.Observable.interval = interval_1.interval;
 });
-System.registerDynamic("rxjs/observable/merge.js", ["../operator/merge"], true, function ($__require, exports, module) {
-  "use strict";
-
-  var global = this || self,
-      GLOBAL = global;
-  Object.defineProperty(exports, "__esModule", { value: true });
-  var merge_1 = $__require("../operator/merge");
-  exports.merge = merge_1.mergeStatic;
-});
 System.registerDynamic("rxjs/add/observable/merge.js", ["../../Observable", "../../observable/merge"], true, function ($__require, exports, module) {
   "use strict";
 
@@ -3308,13 +3295,15 @@ System.registerDynamic("rxjs/add/operator/combineLatest.js", ["../../Observable"
   var combineLatest_1 = $__require("../../operator/combineLatest");
   Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
 });
-System.registerDynamic("rxjs/operator/concat.js", ["../operators/concat"], true, function ($__require, exports, module) {
+System.registerDynamic("rxjs/operator/concat.js", ["../operators/concat", "../observable/concat"], true, function ($__require, exports, module) {
     "use strict";
 
     var global = this || self,
         GLOBAL = global;
     Object.defineProperty(exports, "__esModule", { value: true });
     var concat_1 = $__require("../operators/concat");
+    var concat_2 = $__require("../observable/concat");
+    exports.concatStatic = concat_2.concat;
     /* tslint:enable:max-line-length */
     /**
      * Creates an output Observable which sequentially emits all values from every
@@ -5499,15 +5488,15 @@ System.registerDynamic("rxjs/add/operator/max.js", ["../../Observable", "../../o
   var max_1 = $__require("../../operator/max");
   Observable_1.Observable.prototype.max = max_1.max;
 });
-System.registerDynamic("rxjs/operator/merge.js", ["../operators/merge"], true, function ($__require, exports, module) {
+System.registerDynamic("rxjs/operator/merge.js", ["../operators/merge", "../observable/merge"], true, function ($__require, exports, module) {
     "use strict";
 
     var global = this || self,
         GLOBAL = global;
     Object.defineProperty(exports, "__esModule", { value: true });
     var merge_1 = $__require("../operators/merge");
-    var merge_2 = $__require("../operators/merge");
-    exports.mergeStatic = merge_2.mergeStatic;
+    var merge_2 = $__require("../observable/merge");
+    exports.mergeStatic = merge_2.merge;
     /* tslint:enable:max-line-length */
     /**
      * Creates an output Observable which concurrently emits all values from every
@@ -11494,6 +11483,8 @@ System.registerDynamic("rxjs/operators/concat.js", ["../observable/concat"], tru
         GLOBAL = global;
     Object.defineProperty(exports, "__esModule", { value: true });
     var concat_1 = $__require("../observable/concat");
+    var concat_2 = $__require("../observable/concat");
+    exports.concatStatic = concat_2.concat;
     /* tslint:enable:max-line-length */
     /**
      * Creates an output Observable which sequentially emits all values from every
@@ -14547,27 +14538,16 @@ System.registerDynamic("rxjs/operators/max.js", ["./reduce"], true, function ($_
     }
     exports.max = max;
 });
-System.registerDynamic("rxjs/operators/merge.js", ["../Observable", "../observable/ArrayObservable", "./mergeAll", "../util/isScheduler"], true, function ($__require, exports, module) {
+System.registerDynamic("rxjs/observable/merge.js", ["../Observable", "./ArrayObservable", "../util/isScheduler", "../operators/mergeAll"], true, function ($__require, exports, module) {
     "use strict";
 
     var global = this || self,
         GLOBAL = global;
     Object.defineProperty(exports, "__esModule", { value: true });
     var Observable_1 = $__require("../Observable");
-    var ArrayObservable_1 = $__require("../observable/ArrayObservable");
-    var mergeAll_1 = $__require("./mergeAll");
+    var ArrayObservable_1 = $__require("./ArrayObservable");
     var isScheduler_1 = $__require("../util/isScheduler");
-    /* tslint:enable:max-line-length */
-    function merge() {
-        var observables = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            observables[_i] = arguments[_i];
-        }
-        return function (source) {
-            return source.lift.call(mergeStatic.apply(void 0, [source].concat(observables)));
-        };
-    }
-    exports.merge = merge;
+    var mergeAll_1 = $__require("../operators/mergeAll");
     /* tslint:enable:max-line-length */
     /**
      * Creates an output Observable which concurrently emits all values from every
@@ -14629,7 +14609,7 @@ System.registerDynamic("rxjs/operators/merge.js", ["../Observable", "../observab
      * @name merge
      * @owner Observable
      */
-    function mergeStatic() {
+    function merge() {
         var observables = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             observables[_i] = arguments[_i];
@@ -14650,7 +14630,74 @@ System.registerDynamic("rxjs/operators/merge.js", ["../Observable", "../observab
         }
         return mergeAll_1.mergeAll(concurrent)(new ArrayObservable_1.ArrayObservable(observables, scheduler));
     }
-    exports.mergeStatic = mergeStatic;
+    exports.merge = merge;
+});
+System.registerDynamic("rxjs/operators/merge.js", ["../observable/merge"], true, function ($__require, exports, module) {
+    "use strict";
+
+    var global = this || self,
+        GLOBAL = global;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var merge_1 = $__require("../observable/merge");
+    var merge_2 = $__require("../observable/merge");
+    exports.mergeStatic = merge_2.merge;
+    /* tslint:enable:max-line-length */
+    /**
+     * Creates an output Observable which concurrently emits all values from every
+     * given input Observable.
+     *
+     * <span class="informal">Flattens multiple Observables together by blending
+     * their values into one Observable.</span>
+     *
+     * <img src="./img/merge.png" width="100%">
+     *
+     * `merge` subscribes to each given input Observable (either the source or an
+     * Observable given as argument), and simply forwards (without doing any
+     * transformation) all the values from all the input Observables to the output
+     * Observable. The output Observable only completes once all input Observables
+     * have completed. Any error delivered by an input Observable will be immediately
+     * emitted on the output Observable.
+     *
+     * @example <caption>Merge together two Observables: 1s interval and clicks</caption>
+     * var clicks = Rx.Observable.fromEvent(document, 'click');
+     * var timer = Rx.Observable.interval(1000);
+     * var clicksOrTimer = clicks.merge(timer);
+     * clicksOrTimer.subscribe(x => console.log(x));
+     *
+     * @example <caption>Merge together 3 Observables, but only 2 run concurrently</caption>
+     * var timer1 = Rx.Observable.interval(1000).take(10);
+     * var timer2 = Rx.Observable.interval(2000).take(6);
+     * var timer3 = Rx.Observable.interval(500).take(10);
+     * var concurrent = 2; // the argument
+     * var merged = timer1.merge(timer2, timer3, concurrent);
+     * merged.subscribe(x => console.log(x));
+     *
+     * @see {@link mergeAll}
+     * @see {@link mergeMap}
+     * @see {@link mergeMapTo}
+     * @see {@link mergeScan}
+     *
+     * @param {ObservableInput} other An input Observable to merge with the source
+     * Observable. More than one input Observables may be given as argument.
+     * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
+     * Observables being subscribed to concurrently.
+     * @param {Scheduler} [scheduler=null] The IScheduler to use for managing
+     * concurrency of input Observables.
+     * @return {Observable} An Observable that emits items that are the result of
+     * every input Observable.
+     * @method merge
+     * @owner Observable
+     */
+    function merge() {
+        var observables = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            observables[_i] = arguments[_i];
+        }
+        return function (source) {
+            return source.lift.call(merge_1.merge.apply(void 0, [source].concat(observables)));
+        };
+    }
+    exports.merge = merge;
 });
 System.registerDynamic("rxjs/operators/mergeMapTo.js", ["tslib", "../OuterSubscriber", "../util/subscribeToResult"], true, function ($__require, exports, module) {
     "use strict";
@@ -23953,167 +24000,167 @@ System.registerDynamic("rxjs/operators/zipAll.js", ["./zip"], true, function ($_
     }
     exports.zipAll = zipAll;
 });
-System.registerDynamic("rxjs/operators/index.js", ["./audit", "./auditTime", "./buffer", "./bufferCount", "./bufferTime", "./bufferToggle", "./bufferWhen", "./catchError", "./combineAll", "./combineLatest", "./concat", "./concatAll", "./concatMap", "./concatMapTo", "./count", "./debounce", "./debounceTime", "./defaultIfEmpty", "./delay", "./delayWhen", "./dematerialize", "./distinct", "./distinctUntilChanged", "./distinctUntilKeyChanged", "./elementAt", "./every", "./exhaust", "./exhaustMap", "./expand", "./filter", "./finalize", "./find", "./findIndex", "./first", "./groupBy", "./ignoreElements", "./isEmpty", "./last", "./map", "./mapTo", "./materialize", "./max", "./merge", "./mergeAll", "./mergeMap", "./mergeMapTo", "./mergeScan", "./min", "./multicast", "./observeOn", "./onErrorResumeNext", "./pairwise", "./partition", "./pluck", "./publish", "./publishBehavior", "./publishLast", "./publishReplay", "./race", "./reduce", "./repeat", "./repeatWhen", "./retry", "./retryWhen", "./refCount", "./sample", "./sampleTime", "./scan", "./sequenceEqual", "./share", "./shareReplay", "./single", "./skip", "./skipLast", "./skipUntil", "./skipWhile", "./startWith", "./switchAll", "./switchMap", "./switchMapTo", "./take", "./takeLast", "./takeUntil", "./takeWhile", "./tap", "./throttle", "./throttleTime", "./timeInterval", "./timeout", "./timeoutWith", "./timestamp", "./toArray", "./window", "./windowCount", "./windowTime", "./windowToggle", "./windowWhen", "./withLatestFrom", "./zip", "./zipAll"], true, function ($__require, exports, module) {
+System.registerDynamic("rxjs/operators.js", ["./operators/audit", "./operators/auditTime", "./operators/buffer", "./operators/bufferCount", "./operators/bufferTime", "./operators/bufferToggle", "./operators/bufferWhen", "./operators/catchError", "./operators/combineAll", "./operators/combineLatest", "./operators/concat", "./operators/concatAll", "./operators/concatMap", "./operators/concatMapTo", "./operators/count", "./operators/debounce", "./operators/debounceTime", "./operators/defaultIfEmpty", "./operators/delay", "./operators/delayWhen", "./operators/dematerialize", "./operators/distinct", "./operators/distinctUntilChanged", "./operators/distinctUntilKeyChanged", "./operators/elementAt", "./operators/every", "./operators/exhaust", "./operators/exhaustMap", "./operators/expand", "./operators/filter", "./operators/finalize", "./operators/find", "./operators/findIndex", "./operators/first", "./operators/groupBy", "./operators/ignoreElements", "./operators/isEmpty", "./operators/last", "./operators/map", "./operators/mapTo", "./operators/materialize", "./operators/max", "./operators/merge", "./operators/mergeAll", "./operators/mergeMap", "./operators/mergeMapTo", "./operators/mergeScan", "./operators/min", "./operators/multicast", "./operators/observeOn", "./operators/onErrorResumeNext", "./operators/pairwise", "./operators/partition", "./operators/pluck", "./operators/publish", "./operators/publishBehavior", "./operators/publishLast", "./operators/publishReplay", "./operators/race", "./operators/reduce", "./operators/repeat", "./operators/repeatWhen", "./operators/retry", "./operators/retryWhen", "./operators/refCount", "./operators/sample", "./operators/sampleTime", "./operators/scan", "./operators/sequenceEqual", "./operators/share", "./operators/shareReplay", "./operators/single", "./operators/skip", "./operators/skipLast", "./operators/skipUntil", "./operators/skipWhile", "./operators/startWith", "./operators/switchAll", "./operators/switchMap", "./operators/switchMapTo", "./operators/take", "./operators/takeLast", "./operators/takeUntil", "./operators/takeWhile", "./operators/tap", "./operators/throttle", "./operators/throttleTime", "./operators/timeInterval", "./operators/timeout", "./operators/timeoutWith", "./operators/timestamp", "./operators/toArray", "./operators/window", "./operators/windowCount", "./operators/windowTime", "./operators/windowToggle", "./operators/windowWhen", "./operators/withLatestFrom", "./operators/zip", "./operators/zipAll"], true, function ($__require, exports, module) {
   "use strict";
 
   var global = this || self,
       GLOBAL = global;
   Object.defineProperty(exports, "__esModule", { value: true });
-  var audit_1 = $__require("./audit");
+  var audit_1 = $__require("./operators/audit");
   exports.audit = audit_1.audit;
-  var auditTime_1 = $__require("./auditTime");
+  var auditTime_1 = $__require("./operators/auditTime");
   exports.auditTime = auditTime_1.auditTime;
-  var buffer_1 = $__require("./buffer");
+  var buffer_1 = $__require("./operators/buffer");
   exports.buffer = buffer_1.buffer;
-  var bufferCount_1 = $__require("./bufferCount");
+  var bufferCount_1 = $__require("./operators/bufferCount");
   exports.bufferCount = bufferCount_1.bufferCount;
-  var bufferTime_1 = $__require("./bufferTime");
+  var bufferTime_1 = $__require("./operators/bufferTime");
   exports.bufferTime = bufferTime_1.bufferTime;
-  var bufferToggle_1 = $__require("./bufferToggle");
+  var bufferToggle_1 = $__require("./operators/bufferToggle");
   exports.bufferToggle = bufferToggle_1.bufferToggle;
-  var bufferWhen_1 = $__require("./bufferWhen");
+  var bufferWhen_1 = $__require("./operators/bufferWhen");
   exports.bufferWhen = bufferWhen_1.bufferWhen;
-  var catchError_1 = $__require("./catchError");
+  var catchError_1 = $__require("./operators/catchError");
   exports.catchError = catchError_1.catchError;
-  var combineAll_1 = $__require("./combineAll");
+  var combineAll_1 = $__require("./operators/combineAll");
   exports.combineAll = combineAll_1.combineAll;
-  var combineLatest_1 = $__require("./combineLatest");
+  var combineLatest_1 = $__require("./operators/combineLatest");
   exports.combineLatest = combineLatest_1.combineLatest;
-  var concat_1 = $__require("./concat");
+  var concat_1 = $__require("./operators/concat");
   exports.concat = concat_1.concat;
-  var concatAll_1 = $__require("./concatAll");
+  var concatAll_1 = $__require("./operators/concatAll");
   exports.concatAll = concatAll_1.concatAll;
-  var concatMap_1 = $__require("./concatMap");
+  var concatMap_1 = $__require("./operators/concatMap");
   exports.concatMap = concatMap_1.concatMap;
-  var concatMapTo_1 = $__require("./concatMapTo");
+  var concatMapTo_1 = $__require("./operators/concatMapTo");
   exports.concatMapTo = concatMapTo_1.concatMapTo;
-  var count_1 = $__require("./count");
+  var count_1 = $__require("./operators/count");
   exports.count = count_1.count;
-  var debounce_1 = $__require("./debounce");
+  var debounce_1 = $__require("./operators/debounce");
   exports.debounce = debounce_1.debounce;
-  var debounceTime_1 = $__require("./debounceTime");
+  var debounceTime_1 = $__require("./operators/debounceTime");
   exports.debounceTime = debounceTime_1.debounceTime;
-  var defaultIfEmpty_1 = $__require("./defaultIfEmpty");
+  var defaultIfEmpty_1 = $__require("./operators/defaultIfEmpty");
   exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
-  var delay_1 = $__require("./delay");
+  var delay_1 = $__require("./operators/delay");
   exports.delay = delay_1.delay;
-  var delayWhen_1 = $__require("./delayWhen");
+  var delayWhen_1 = $__require("./operators/delayWhen");
   exports.delayWhen = delayWhen_1.delayWhen;
-  var dematerialize_1 = $__require("./dematerialize");
+  var dematerialize_1 = $__require("./operators/dematerialize");
   exports.dematerialize = dematerialize_1.dematerialize;
-  var distinct_1 = $__require("./distinct");
+  var distinct_1 = $__require("./operators/distinct");
   exports.distinct = distinct_1.distinct;
-  var distinctUntilChanged_1 = $__require("./distinctUntilChanged");
+  var distinctUntilChanged_1 = $__require("./operators/distinctUntilChanged");
   exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
-  var distinctUntilKeyChanged_1 = $__require("./distinctUntilKeyChanged");
+  var distinctUntilKeyChanged_1 = $__require("./operators/distinctUntilKeyChanged");
   exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
-  var elementAt_1 = $__require("./elementAt");
+  var elementAt_1 = $__require("./operators/elementAt");
   exports.elementAt = elementAt_1.elementAt;
-  var every_1 = $__require("./every");
+  var every_1 = $__require("./operators/every");
   exports.every = every_1.every;
-  var exhaust_1 = $__require("./exhaust");
+  var exhaust_1 = $__require("./operators/exhaust");
   exports.exhaust = exhaust_1.exhaust;
-  var exhaustMap_1 = $__require("./exhaustMap");
+  var exhaustMap_1 = $__require("./operators/exhaustMap");
   exports.exhaustMap = exhaustMap_1.exhaustMap;
-  var expand_1 = $__require("./expand");
+  var expand_1 = $__require("./operators/expand");
   exports.expand = expand_1.expand;
-  var filter_1 = $__require("./filter");
+  var filter_1 = $__require("./operators/filter");
   exports.filter = filter_1.filter;
-  var finalize_1 = $__require("./finalize");
+  var finalize_1 = $__require("./operators/finalize");
   exports.finalize = finalize_1.finalize;
-  var find_1 = $__require("./find");
+  var find_1 = $__require("./operators/find");
   exports.find = find_1.find;
-  var findIndex_1 = $__require("./findIndex");
+  var findIndex_1 = $__require("./operators/findIndex");
   exports.findIndex = findIndex_1.findIndex;
-  var first_1 = $__require("./first");
+  var first_1 = $__require("./operators/first");
   exports.first = first_1.first;
-  var groupBy_1 = $__require("./groupBy");
+  var groupBy_1 = $__require("./operators/groupBy");
   exports.groupBy = groupBy_1.groupBy;
-  var ignoreElements_1 = $__require("./ignoreElements");
+  var ignoreElements_1 = $__require("./operators/ignoreElements");
   exports.ignoreElements = ignoreElements_1.ignoreElements;
-  var isEmpty_1 = $__require("./isEmpty");
+  var isEmpty_1 = $__require("./operators/isEmpty");
   exports.isEmpty = isEmpty_1.isEmpty;
-  var last_1 = $__require("./last");
+  var last_1 = $__require("./operators/last");
   exports.last = last_1.last;
-  var map_1 = $__require("./map");
+  var map_1 = $__require("./operators/map");
   exports.map = map_1.map;
-  var mapTo_1 = $__require("./mapTo");
+  var mapTo_1 = $__require("./operators/mapTo");
   exports.mapTo = mapTo_1.mapTo;
-  var materialize_1 = $__require("./materialize");
+  var materialize_1 = $__require("./operators/materialize");
   exports.materialize = materialize_1.materialize;
-  var max_1 = $__require("./max");
+  var max_1 = $__require("./operators/max");
   exports.max = max_1.max;
-  var merge_1 = $__require("./merge");
+  var merge_1 = $__require("./operators/merge");
   exports.merge = merge_1.merge;
-  var mergeAll_1 = $__require("./mergeAll");
+  var mergeAll_1 = $__require("./operators/mergeAll");
   exports.mergeAll = mergeAll_1.mergeAll;
-  var mergeMap_1 = $__require("./mergeMap");
+  var mergeMap_1 = $__require("./operators/mergeMap");
   exports.mergeMap = mergeMap_1.mergeMap;
-  var mergeMap_2 = $__require("./mergeMap");
+  var mergeMap_2 = $__require("./operators/mergeMap");
   exports.flatMap = mergeMap_2.mergeMap;
-  var mergeMapTo_1 = $__require("./mergeMapTo");
+  var mergeMapTo_1 = $__require("./operators/mergeMapTo");
   exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
-  var mergeScan_1 = $__require("./mergeScan");
+  var mergeScan_1 = $__require("./operators/mergeScan");
   exports.mergeScan = mergeScan_1.mergeScan;
-  var min_1 = $__require("./min");
+  var min_1 = $__require("./operators/min");
   exports.min = min_1.min;
-  var multicast_1 = $__require("./multicast");
+  var multicast_1 = $__require("./operators/multicast");
   exports.multicast = multicast_1.multicast;
-  var observeOn_1 = $__require("./observeOn");
+  var observeOn_1 = $__require("./operators/observeOn");
   exports.observeOn = observeOn_1.observeOn;
-  var onErrorResumeNext_1 = $__require("./onErrorResumeNext");
+  var onErrorResumeNext_1 = $__require("./operators/onErrorResumeNext");
   exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-  var pairwise_1 = $__require("./pairwise");
+  var pairwise_1 = $__require("./operators/pairwise");
   exports.pairwise = pairwise_1.pairwise;
-  var partition_1 = $__require("./partition");
+  var partition_1 = $__require("./operators/partition");
   exports.partition = partition_1.partition;
-  var pluck_1 = $__require("./pluck");
+  var pluck_1 = $__require("./operators/pluck");
   exports.pluck = pluck_1.pluck;
-  var publish_1 = $__require("./publish");
+  var publish_1 = $__require("./operators/publish");
   exports.publish = publish_1.publish;
-  var publishBehavior_1 = $__require("./publishBehavior");
+  var publishBehavior_1 = $__require("./operators/publishBehavior");
   exports.publishBehavior = publishBehavior_1.publishBehavior;
-  var publishLast_1 = $__require("./publishLast");
+  var publishLast_1 = $__require("./operators/publishLast");
   exports.publishLast = publishLast_1.publishLast;
-  var publishReplay_1 = $__require("./publishReplay");
+  var publishReplay_1 = $__require("./operators/publishReplay");
   exports.publishReplay = publishReplay_1.publishReplay;
-  var race_1 = $__require("./race");
+  var race_1 = $__require("./operators/race");
   exports.race = race_1.race;
-  var reduce_1 = $__require("./reduce");
+  var reduce_1 = $__require("./operators/reduce");
   exports.reduce = reduce_1.reduce;
-  var repeat_1 = $__require("./repeat");
+  var repeat_1 = $__require("./operators/repeat");
   exports.repeat = repeat_1.repeat;
-  var repeatWhen_1 = $__require("./repeatWhen");
+  var repeatWhen_1 = $__require("./operators/repeatWhen");
   exports.repeatWhen = repeatWhen_1.repeatWhen;
-  var retry_1 = $__require("./retry");
+  var retry_1 = $__require("./operators/retry");
   exports.retry = retry_1.retry;
-  var retryWhen_1 = $__require("./retryWhen");
+  var retryWhen_1 = $__require("./operators/retryWhen");
   exports.retryWhen = retryWhen_1.retryWhen;
-  var refCount_1 = $__require("./refCount");
+  var refCount_1 = $__require("./operators/refCount");
   exports.refCount = refCount_1.refCount;
-  var sample_1 = $__require("./sample");
+  var sample_1 = $__require("./operators/sample");
   exports.sample = sample_1.sample;
-  var sampleTime_1 = $__require("./sampleTime");
+  var sampleTime_1 = $__require("./operators/sampleTime");
   exports.sampleTime = sampleTime_1.sampleTime;
-  var scan_1 = $__require("./scan");
+  var scan_1 = $__require("./operators/scan");
   exports.scan = scan_1.scan;
-  var sequenceEqual_1 = $__require("./sequenceEqual");
+  var sequenceEqual_1 = $__require("./operators/sequenceEqual");
   exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
-  var share_1 = $__require("./share");
+  var share_1 = $__require("./operators/share");
   exports.share = share_1.share;
-  var shareReplay_1 = $__require("./shareReplay");
+  var shareReplay_1 = $__require("./operators/shareReplay");
   exports.shareReplay = shareReplay_1.shareReplay;
-  var single_1 = $__require("./single");
+  var single_1 = $__require("./operators/single");
   exports.single = single_1.single;
-  var skip_1 = $__require("./skip");
+  var skip_1 = $__require("./operators/skip");
   exports.skip = skip_1.skip;
-  var skipLast_1 = $__require("./skipLast");
+  var skipLast_1 = $__require("./operators/skipLast");
   exports.skipLast = skipLast_1.skipLast;
-  var skipUntil_1 = $__require("./skipUntil");
+  var skipUntil_1 = $__require("./operators/skipUntil");
   exports.skipUntil = skipUntil_1.skipUntil;
-  var skipWhile_1 = $__require("./skipWhile");
+  var skipWhile_1 = $__require("./operators/skipWhile");
   exports.skipWhile = skipWhile_1.skipWhile;
-  var startWith_1 = $__require("./startWith");
+  var startWith_1 = $__require("./operators/startWith");
   exports.startWith = startWith_1.startWith;
   /**
    * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
@@ -24121,52 +24168,52 @@ System.registerDynamic("rxjs/operators/index.js", ["./audit", "./auditTime", "./
    * forces apps to bring in asap scheduler along with
    * Immediate, root, and other supporting code.
    */
-  // export { subscribeOn } from './subscribeOn';
-  var switchAll_1 = $__require("./switchAll");
+  // export { subscribeOn } from './operators/subscribeOn';
+  var switchAll_1 = $__require("./operators/switchAll");
   exports.switchAll = switchAll_1.switchAll;
-  var switchMap_1 = $__require("./switchMap");
+  var switchMap_1 = $__require("./operators/switchMap");
   exports.switchMap = switchMap_1.switchMap;
-  var switchMapTo_1 = $__require("./switchMapTo");
+  var switchMapTo_1 = $__require("./operators/switchMapTo");
   exports.switchMapTo = switchMapTo_1.switchMapTo;
-  var take_1 = $__require("./take");
+  var take_1 = $__require("./operators/take");
   exports.take = take_1.take;
-  var takeLast_1 = $__require("./takeLast");
+  var takeLast_1 = $__require("./operators/takeLast");
   exports.takeLast = takeLast_1.takeLast;
-  var takeUntil_1 = $__require("./takeUntil");
+  var takeUntil_1 = $__require("./operators/takeUntil");
   exports.takeUntil = takeUntil_1.takeUntil;
-  var takeWhile_1 = $__require("./takeWhile");
+  var takeWhile_1 = $__require("./operators/takeWhile");
   exports.takeWhile = takeWhile_1.takeWhile;
-  var tap_1 = $__require("./tap");
+  var tap_1 = $__require("./operators/tap");
   exports.tap = tap_1.tap;
-  var throttle_1 = $__require("./throttle");
+  var throttle_1 = $__require("./operators/throttle");
   exports.throttle = throttle_1.throttle;
-  var throttleTime_1 = $__require("./throttleTime");
+  var throttleTime_1 = $__require("./operators/throttleTime");
   exports.throttleTime = throttleTime_1.throttleTime;
-  var timeInterval_1 = $__require("./timeInterval");
+  var timeInterval_1 = $__require("./operators/timeInterval");
   exports.timeInterval = timeInterval_1.timeInterval;
-  var timeout_1 = $__require("./timeout");
+  var timeout_1 = $__require("./operators/timeout");
   exports.timeout = timeout_1.timeout;
-  var timeoutWith_1 = $__require("./timeoutWith");
+  var timeoutWith_1 = $__require("./operators/timeoutWith");
   exports.timeoutWith = timeoutWith_1.timeoutWith;
-  var timestamp_1 = $__require("./timestamp");
+  var timestamp_1 = $__require("./operators/timestamp");
   exports.timestamp = timestamp_1.timestamp;
-  var toArray_1 = $__require("./toArray");
+  var toArray_1 = $__require("./operators/toArray");
   exports.toArray = toArray_1.toArray;
-  var window_1 = $__require("./window");
+  var window_1 = $__require("./operators/window");
   exports.window = window_1.window;
-  var windowCount_1 = $__require("./windowCount");
+  var windowCount_1 = $__require("./operators/windowCount");
   exports.windowCount = windowCount_1.windowCount;
-  var windowTime_1 = $__require("./windowTime");
+  var windowTime_1 = $__require("./operators/windowTime");
   exports.windowTime = windowTime_1.windowTime;
-  var windowToggle_1 = $__require("./windowToggle");
+  var windowToggle_1 = $__require("./operators/windowToggle");
   exports.windowToggle = windowToggle_1.windowToggle;
-  var windowWhen_1 = $__require("./windowWhen");
+  var windowWhen_1 = $__require("./operators/windowWhen");
   exports.windowWhen = windowWhen_1.windowWhen;
-  var withLatestFrom_1 = $__require("./withLatestFrom");
+  var withLatestFrom_1 = $__require("./operators/withLatestFrom");
   exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
-  var zip_1 = $__require("./zip");
+  var zip_1 = $__require("./operators/zip");
   exports.zip = zip_1.zip;
-  var zipAll_1 = $__require("./zipAll");
+  var zipAll_1 = $__require("./operators/zipAll");
   exports.zipAll = zipAll_1.zipAll;
 });
 System.registerDynamic("rxjs/Rx.js", ["./Subject", "./Observable", "./add/observable/bindCallback", "./add/observable/bindNodeCallback", "./add/observable/combineLatest", "./add/observable/concat", "./add/observable/defer", "./add/observable/empty", "./add/observable/forkJoin", "./add/observable/from", "./add/observable/fromEvent", "./add/observable/fromEventPattern", "./add/observable/fromPromise", "./add/observable/generate", "./add/observable/if", "./add/observable/interval", "./add/observable/merge", "./add/observable/race", "./add/observable/never", "./add/observable/of", "./add/observable/onErrorResumeNext", "./add/observable/pairs", "./add/observable/range", "./add/observable/using", "./add/observable/throw", "./add/observable/timer", "./add/observable/zip", "./add/observable/dom/ajax", "./add/observable/dom/webSocket", "./add/operator/buffer", "./add/operator/bufferCount", "./add/operator/bufferTime", "./add/operator/bufferToggle", "./add/operator/bufferWhen", "./add/operator/catch", "./add/operator/combineAll", "./add/operator/combineLatest", "./add/operator/concat", "./add/operator/concatAll", "./add/operator/concatMap", "./add/operator/concatMapTo", "./add/operator/count", "./add/operator/dematerialize", "./add/operator/debounce", "./add/operator/debounceTime", "./add/operator/defaultIfEmpty", "./add/operator/delay", "./add/operator/delayWhen", "./add/operator/distinct", "./add/operator/distinctUntilChanged", "./add/operator/distinctUntilKeyChanged", "./add/operator/do", "./add/operator/exhaust", "./add/operator/exhaustMap", "./add/operator/expand", "./add/operator/elementAt", "./add/operator/filter", "./add/operator/finally", "./add/operator/find", "./add/operator/findIndex", "./add/operator/first", "./add/operator/groupBy", "./add/operator/ignoreElements", "./add/operator/isEmpty", "./add/operator/audit", "./add/operator/auditTime", "./add/operator/last", "./add/operator/let", "./add/operator/every", "./add/operator/map", "./add/operator/mapTo", "./add/operator/materialize", "./add/operator/max", "./add/operator/merge", "./add/operator/mergeAll", "./add/operator/mergeMap", "./add/operator/mergeMapTo", "./add/operator/mergeScan", "./add/operator/min", "./add/operator/multicast", "./add/operator/observeOn", "./add/operator/onErrorResumeNext", "./add/operator/pairwise", "./add/operator/partition", "./add/operator/pluck", "./add/operator/publish", "./add/operator/publishBehavior", "./add/operator/publishReplay", "./add/operator/publishLast", "./add/operator/race", "./add/operator/reduce", "./add/operator/repeat", "./add/operator/repeatWhen", "./add/operator/retry", "./add/operator/retryWhen", "./add/operator/sample", "./add/operator/sampleTime", "./add/operator/scan", "./add/operator/sequenceEqual", "./add/operator/share", "./add/operator/shareReplay", "./add/operator/single", "./add/operator/skip", "./add/operator/skipLast", "./add/operator/skipUntil", "./add/operator/skipWhile", "./add/operator/startWith", "./add/operator/subscribeOn", "./add/operator/switch", "./add/operator/switchMap", "./add/operator/switchMapTo", "./add/operator/take", "./add/operator/takeLast", "./add/operator/takeUntil", "./add/operator/takeWhile", "./add/operator/throttle", "./add/operator/throttleTime", "./add/operator/timeInterval", "./add/operator/timeout", "./add/operator/timeoutWith", "./add/operator/timestamp", "./add/operator/toArray", "./add/operator/toPromise", "./add/operator/window", "./add/operator/windowCount", "./add/operator/windowTime", "./add/operator/windowToggle", "./add/operator/windowWhen", "./add/operator/withLatestFrom", "./add/operator/zip", "./add/operator/zipAll", "./Subscription", "./Subscriber", "./AsyncSubject", "./ReplaySubject", "./BehaviorSubject", "./observable/ConnectableObservable", "./Notification", "./util/EmptyError", "./util/ArgumentOutOfRangeError", "./util/ObjectUnsubscribedError", "./util/TimeoutError", "./util/UnsubscriptionError", "./operator/timeInterval", "./operators/timestamp", "./testing/TestScheduler", "./scheduler/VirtualTimeScheduler", "./observable/dom/AjaxObservable", "./util/pipe", "./scheduler/asap", "./scheduler/async", "./scheduler/queue", "./scheduler/animationFrame", "./symbol/rxSubscriber", "./symbol/iterator", "./symbol/observable", "./operators"], true, function ($__require, exports, module) {

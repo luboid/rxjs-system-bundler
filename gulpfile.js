@@ -42,19 +42,19 @@ function bundle_rxjs() {
         defaultExtension: "js",
         main: "Rx",
         format: "cjs"
-      },
-      "rxjs/operators": {
-        defaultExtension: "js",
-        main: "index",
-        format: "cjs"
       }
+      //"rxjs/operators": {
+      //  defaultExtension: "js",
+      //  main: "index",
+      //  format: "cjs"
+      //}
     }
   };
 
   const create = function(settings = {}) {
     const builder = new Builder(dist, config);
     return builder.bundle(
-      library,
+      library, // + " + " + library + "/operators",
       dist +
         "/" +
         library +
